@@ -10,16 +10,24 @@ const frontend_URL = 'http://localhost:5173';
 
 // Placing User Order for Frontend using stripe
 const placeOrder = async (req, res) => {
-
     try {
         const newOrder = new orderModel({
             userId: req.body.userId,
             items: req.body.items,
             amount: req.body.amount,
             address: req.body.address,
+            // Add new fields if they exist in the request
+            customerName: req.body.customerName,
+            deliveryDate: req.body.deliveryDate,
+            deliveryTime: req.body.deliveryTime,
+            specialRequests: req.body.specialRequests
         })
         await newOrder.save();
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+        // Clear both cart data and cart item details
+        await userModel.findByIdAndUpdate(req.body.userId, { 
+            cartData: {},
+            cartItemDetails: {} 
+        });
 
         const line_items = req.body.items.map((item) => ({
             price_data: {
@@ -51,16 +59,14 @@ const placeOrder = async (req, res) => {
         });
 
         res.json({ success: true, session_url: session.url });
-
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error" })
     }
 }
 
-// Placing User Order for Frontend using stripe
+// Placing User Order for Frontend using COD
 const placeOrderCod = async (req, res) => {
-
     try {
         const newOrder = new orderModel({
             userId: req.body.userId,
@@ -68,19 +74,27 @@ const placeOrderCod = async (req, res) => {
             amount: req.body.amount,
             address: req.body.address,
             payment: true,
+            // Add new fields if they exist in the request
+            customerName: req.body.customerName,
+            deliveryDate: req.body.deliveryDate,
+            deliveryTime: req.body.deliveryTime,
+            specialRequests: req.body.specialRequests
         })
         await newOrder.save();
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+        // Clear both cart data and cart item details
+        await userModel.findByIdAndUpdate(req.body.userId, { 
+            cartData: {},
+            cartItemDetails: {} 
+        });
 
         res.json({ success: true, message: "Order Placed" });
-
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Error" })
+        res.json({ success: false, message: "Error", details: error.message })
     }
 }
 
-// Listing Order for Admin panel
+// Rest of your controller functions remain the same
 const listOrders = async (req, res) => {
     try {
         const orders = await orderModel.find({});
@@ -91,7 +105,6 @@ const listOrders = async (req, res) => {
     }
 }
 
-// User Orders for Frontend
 const userOrders = async (req, res) => {
     try {
         const orders = await orderModel.find({ userId: req.body.userId });
@@ -110,7 +123,6 @@ const updateStatus = async (req, res) => {
     } catch (error) {
         res.json({ success: false, message: "Error" })
     }
-
 }
 
 const verifyOrder = async (req, res) => {
@@ -125,9 +137,8 @@ const verifyOrder = async (req, res) => {
             res.json({ success: false, message: "Not Paid" })
         }
     } catch (error) {
-        res.json({ success: false, message: "Not  Verified" })
+        res.json({ success: false, message: "Not Verified" })
     }
-
 }
 
 export { placeOrder, listOrders, userOrders, updateStatus, verifyOrder, placeOrderCod }

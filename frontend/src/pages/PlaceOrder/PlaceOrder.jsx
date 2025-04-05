@@ -21,7 +21,7 @@ const PlaceOrder = () => {
         phone: ""
     })
 
-    const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems,currency,deliveryCharge } = useContext(StoreContext);
+    const { getTotalCartAmount, token, food_list, cartItems, cartItemDetails, url, setCartItems, currency, deliveryCharge } = useContext(StoreContext);
 
     const navigate = useNavigate();
 
@@ -38,14 +38,32 @@ const PlaceOrder = () => {
             if (cartItems[item._id] > 0) {
                 let itemInfo = item;
                 itemInfo["quantity"] = cartItems[item._id];
+                
+                // Add form data to the order item if available
+                if (cartItemDetails && cartItemDetails[item._id]) {
+                    itemInfo["customerName"] = cartItemDetails[item._id].customerName;
+                    itemInfo["deliveryDate"] = cartItemDetails[item._id].deliveryDate;
+                    itemInfo["deliveryTime"] = cartItemDetails[item._id].deliveryTime;
+                    itemInfo["specialRequests"] = cartItemDetails[item._id].specialRequests;
+                }
+                
                 orderItems.push(itemInfo)
             }
         }))
+        
         let orderData = {
             address: data,
             items: orderItems,
             amount: getTotalCartAmount() + deliveryCharge,
+            // Add overall customer details from first item's form data if available
+            ...(orderItems.length > 0 && orderItems[0].customerName ? {
+                customerName: orderItems[0].customerName,
+                deliveryDate: orderItems[0].deliveryDate,
+                deliveryTime: orderItems[0].deliveryTime,
+                specialRequests: orderItems[0].specialRequests
+            } : {})
         }
+        
         if (payment === "stripe") {
             let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
             if (response.data.success) {
@@ -67,7 +85,44 @@ const PlaceOrder = () => {
                 toast.error("Something Went Wrong")
             }
         }
-
+    }
+    
+    // Display order summary including form data
+    const OrderSummary = () => {
+        return (
+            <div className="order-summary">
+                <h2>Order Summary</h2>
+                {food_list.map((item) => {
+                    if (cartItems[item._id] > 0) {
+                        return (
+                            <div key={item._id} className="order-item">
+                                <div className="order-item-details">
+                                    <img src={url + "/images/" + item.image} alt={item.name} />
+                                    <div>
+                                        <h3>{item.name}</h3>
+                                        <p className="quantity">Quantity: {cartItems[item._id]}</p>
+                                        <p className="price">{currency}{item.price * cartItems[item._id]}</p>
+                                    </div>
+                                </div>
+                                
+                                {cartItemDetails && cartItemDetails[item._id] && (
+                                    <div className="order-item-form-data">
+                                        <h4>Delivery Details:</h4>
+                                        <p><strong>For:</strong> {cartItemDetails[item._id].customerName}</p>
+                                        <p><strong>Date:</strong> {new Date(cartItemDetails[item._id].deliveryDate).toLocaleDateString()}</p>
+                                        <p><strong>Time:</strong> {cartItemDetails[item._id].deliveryTime}</p>
+                                        {cartItemDetails[item._id].specialRequests && (
+                                            <p><strong>Special Requests:</strong> {cartItemDetails[item._id].specialRequests}</p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    }
+                    return null;
+                })}
+            </div>
+        )
     }
 
     useEffect(() => {
@@ -99,6 +154,9 @@ const PlaceOrder = () => {
                     <input type="text" name='country' onChange={onChangeHandler} value={data.country} placeholder='Country' required />
                 </div>
                 <input type="text" name='phone' onChange={onChangeHandler} value={data.phone} placeholder='Phone' required />
+                
+                {/* Display order summary with form data */}
+                <OrderSummary />
             </div>
             <div className="place-order-right">
                 <div className="cart-total">
