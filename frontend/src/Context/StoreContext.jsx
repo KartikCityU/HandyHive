@@ -1,23 +1,56 @@
 import { createContext, useEffect, useState } from "react";
-import { menu_list } from "../assets/assets";
 import axios from "axios";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-
-    const url = "http://localhost:4000"
-    const [food_list, setFoodList] = useState([]);
+    const url = "http://localhost:4000";
+    const [service_list, setServiceList] = useState([]);
     const [cartItems, setCartItems] = useState({});
-    const [cartItemDetails, setCartItemDetails] = useState({}); // New state for form details
-    const [token, setToken] = useState("")
+    const [cartItemDetails, setCartItemDetails] = useState({}); // For form details
+    const [token, setToken] = useState("");
     const currency = "$";
     const deliveryCharge = 5;
+
+    // Define service categories
+    const service_categories = [
+        {
+            category_name: "Plumbing",
+            category_image: "/images/categories/plumbing.jpg"
+        },
+        {
+            category_name: "Electrical",
+            category_image: "/images/categories/electrical.jpg"
+        },
+        {
+            category_name: "Cleaning",
+            category_image: "/images/categories/cleaning.jpg"
+        },
+        {
+            category_name: "Painting",
+            category_image: "/images/categories/painting.jpg"
+        },
+        {
+            category_name: "Carpentry",
+            category_image: "/images/categories/carpentry.jpg"
+        },
+        {
+            category_name: "Home Repair",
+            category_image: "/images/categories/repair.jpg"
+        },
+        {
+            category_name: "Appliance Repair",
+            category_image: "/images/categories/appliance.jpg"
+        },
+        {
+            category_name: "Gardening",
+            category_image: "/images/categories/gardening.jpg"
+        }
+    ];
 
     const addToCart = async (itemId, formData = null) => {
         if (!cartItems[itemId]) {
             setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-        }
-        else {
+        } else {
             setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
         }
         
@@ -36,10 +69,10 @@ const StoreContextProvider = (props) => {
                 formData
             }, { headers: { token } });
         }
-    }
+    };
 
     const removeFromCart = async (itemId) => {
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }))
+        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
         
         // Remove item details if count reaches 0
         if (cartItems[itemId] === 1) {
@@ -53,40 +86,62 @@ const StoreContextProvider = (props) => {
         if (token) {
             await axios.post(url + "/api/cart/remove", { itemId }, { headers: { token } });
         }
-    }
+    };
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         for (const item in cartItems) {
             try {
-              if (cartItems[item] > 0) {
-                let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo.price * cartItems[item];
-            }  
+                if (cartItems[item] > 0) {
+                    let itemInfo = service_list.find((service) => service._id === item);
+                    if (itemInfo) {
+                        totalAmount += itemInfo.price * cartItems[item];
+                    }
+                }
             } catch (error) {
-                
+                console.error("Error calculating cart amount:", error);
             }
-            
         }
         return totalAmount;
-    }
+    };
 
-    const fetchFoodList = async () => {
-        const response = await axios.get(url + "/api/food/list");
-        setFoodList(response.data.data)
-    }
+    const fetchServiceList = async () => {
+        try {
+            // First try to fetch from services API
+            const response = await axios.get(url + "/api/services/list");
+            if (response.data.success) {
+                setServiceList(response.data.data);
+            }
+        } catch (serviceError) {
+            console.error("Error fetching service list:", serviceError);
+            try {
+                // Fallback to food API during transition
+                const foodResponse = await axios.get(url + "/api/food/list");
+                if (foodResponse.data.success) {
+                    setServiceList(foodResponse.data.data);
+                }
+            } catch (foodError) {
+                console.error("Error fetching food list fallback:", foodError);
+                setServiceList([]);
+            }
+        }
+    };
 
     const loadCartData = async (token) => {
-        const response = await axios.post(url + "/api/cart/get", {}, { headers: token });
-        setCartItems(response.data.cartData);
-        
-        // Load cart item details if available in the response
-        if (response.data.cartItemDetails) {
-            setCartItemDetails(response.data.cartItemDetails);
+        try {
+            const response = await axios.post(url + "/api/cart/get", {}, { headers: token });
+            setCartItems(response.data.cartData || {});
+            
+            // Load cart item details if available in the response
+            if (response.data.cartItemDetails) {
+                setCartItemDetails(response.data.cartItemDetails);
+            }
+        } catch (error) {
+            console.error("Error loading cart data:", error);
         }
-    }
+    };
 
-    // New function to place order with all details
+    // Function to place order with all details
     const placeOrder = async (address) => {
         try {
             if (token) {
@@ -97,8 +152,9 @@ const StoreContextProvider = (props) => {
                         // Include form data if available for this item
                         ...(cartItemDetails[itemId] ? {
                             customerName: cartItemDetails[itemId].customerName,
-                            deliveryDate: cartItemDetails[itemId].deliveryDate,
-                            deliveryTime: cartItemDetails[itemId].deliveryTime,
+                            serviceDate: cartItemDetails[itemId].serviceDate || cartItemDetails[itemId].deliveryDate,
+                            serviceTime: cartItemDetails[itemId].serviceTime || cartItemDetails[itemId].deliveryTime,
+                            address: cartItemDetails[itemId].address || "",
                             specialRequests: cartItemDetails[itemId].specialRequests
                         } : {})
                     })),
@@ -106,8 +162,10 @@ const StoreContextProvider = (props) => {
                     address,
                     // Add overall customer info if needed
                     customerName: Object.values(cartItemDetails)[0]?.customerName || "",
-                    deliveryDate: Object.values(cartItemDetails)[0]?.deliveryDate || "",
-                    deliveryTime: Object.values(cartItemDetails)[0]?.deliveryTime || "",
+                    serviceDate: Object.values(cartItemDetails)[0]?.serviceDate || 
+                               Object.values(cartItemDetails)[0]?.deliveryDate || "",
+                    serviceTime: Object.values(cartItemDetails)[0]?.serviceTime || 
+                               Object.values(cartItemDetails)[0]?.deliveryTime || "",
                     specialRequests: Object.values(cartItemDetails)[0]?.specialRequests || ""
                 };
                 
@@ -127,25 +185,27 @@ const StoreContextProvider = (props) => {
             console.error("Error placing order:", error);
             throw error;
         }
-    }
+    };
 
     useEffect(() => {
         async function loadData() {
-            await fetchFoodList();
+            await fetchServiceList();
             if (localStorage.getItem("token")) {
-                setToken(localStorage.getItem("token"))
-                await loadCartData({ token: localStorage.getItem("token") })
+                setToken(localStorage.getItem("token"));
+                await loadCartData({ token: localStorage.getItem("token") });
             }
         }
-        loadData()
-    }, [])
+        loadData();
+    }, []);
 
     const contextValue = {
         url,
-        food_list,
-        menu_list,
+        food_list: service_list, // For backward compatibility
+        service_list,
+        menu_list: service_categories, // For backward compatibility
+        service_categories,
         cartItems,
-        cartItemDetails, // Expose the form details
+        cartItemDetails,
         addToCart,
         removeFromCart,
         getTotalCartAmount,
@@ -153,7 +213,7 @@ const StoreContextProvider = (props) => {
         setToken,
         loadCartData,
         setCartItems,
-        placeOrder, // Expose the new function
+        placeOrder,
         currency,
         deliveryCharge
     };
@@ -162,8 +222,7 @@ const StoreContextProvider = (props) => {
         <StoreContext.Provider value={contextValue}>
             {props.children}
         </StoreContext.Provider>
-    )
-
-}
+    );
+};
 
 export default StoreContextProvider;

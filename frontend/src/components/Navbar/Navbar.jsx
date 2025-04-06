@@ -7,7 +7,7 @@ import { StoreContext } from '../../Context/StoreContext'
 const Navbar = ({ setShowLogin }) => {
 
   const [menu, setMenu] = useState("home");
-  const { getTotalCartAmount, token ,setToken } = useContext(StoreContext);
+  const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -21,8 +21,8 @@ const Navbar = ({ setShowLogin }) => {
       <Link to='/'><img className='logo' src={assets.logo} alt="" /></Link>
       <ul className="navbar-menu">
         <Link to="/" onClick={() => setMenu("home")} className={`${menu === "home" ? "active" : ""}`}>Home</Link>
-        <a href='#explore-menu' onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>Services</a>
-        <a href='#app-download' onClick={() => setMenu("mob-app")} className={`${menu === "mob-app" ? "active" : ""}`}>Mobile app</a>
+        <a href='#explore-services' onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>Services</a>
+        <Link to="/delivery-partners" onClick={() => setMenu("delivery")} className={`${menu === "delivery" ? "active" : ""}`}>Service Partners</Link>
         <a href='#footer' onClick={() => setMenu("contact")} className={`${menu === "contact" ? "active" : ""}`}>Contact us</a>
       </ul>
       <div className="navbar-right">
@@ -35,13 +35,13 @@ const Navbar = ({ setShowLogin }) => {
           : <div className='navbar-profile'>
             <img src={assets.profile_icon} alt="" />
             <ul className='navbar-profile-dropdown'>
-              <li onClick={()=>navigate('/myorders')}> <img src={assets.bag_icon} alt="" /> <p>Orders</p></li>
+              <li onClick={() => navigate('/myorders')}> <img src={assets.bag_icon} alt="" /> <p>Orders</p></li>
+              <li onClick={() => navigate('/delivery-partners')}> <img src={assets.delivery_icon || assets.bag_icon} alt="" /> <p>Service Partners</p></li>
               <hr />
               <li onClick={logout}> <img src={assets.logout_icon} alt="" /> <p>Logout</p></li> 
             </ul>
           </div>
         }
-
       </div>
     </div>
   )

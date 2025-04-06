@@ -6,7 +6,8 @@ import foodRouter from "./routes/foodRoute.js"
 import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js"
 import orderRouter from "./routes/orderRoute.js"
-
+import deliveryAgentRoutes from './routes/deliveryAgentRoutes.js';
+import serviceRouter from './routes/serviceRoute.js';
 // app config
 const app = express()
 const port = process.env.PORT || 4000;
@@ -25,6 +26,8 @@ app.use("/api/food", foodRouter)
 app.use("/images",express.static('uploads'))
 app.use("/api/cart", cartRouter)
 app.use("/api/order",orderRouter)
+app.use('/api/agents', deliveryAgentRoutes);
+app.use('/api/services', serviceRouter);
 
 app.get("/", (req, res) => {
     res.send("API Working")

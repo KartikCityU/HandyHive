@@ -1,0 +1,132 @@
+.add-service {
+    width: 80%;
+    margin-left: max(5vw, 25px);
+    margin-top: 30px;
+    color: #4A4A4A;
+    font-size: 16px;
+}
+
+.add-service h2 {
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #333;
+    font-weight: 600;
+    border-left: 4px solid #FF4C24;
+    padding-left: 12px;
+}
+
+.add-service form {
+    gap: 20px;
+}
+
+.add-img-upload {
+    margin-bottom: 10px;
+}
+
+.add-img-upload p {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.upload-image-preview {
+    width: 150px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-image-preview:hover {
+    border-color: #FF4C24;
+}
+
+.add-service-name, .add-service-description {
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-service-name input, .add-service-description textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    width: 100%;
+}
+
+.add-service-name input:focus, 
+.add-service-description textarea:focus {
+    outline: none;
+    border-color: #FF4C24;
+    box-shadow: 0 0 0 2px rgba(255, 76, 36, 0.1);
+}
+
+.add-category-section, .add-service-details {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-category, 
+.add-price, 
+.add-duration, 
+.add-price-type {
+    flex: 1;
+    min-width: 200px;
+}
+
+.add-category select, 
+.add-price input, 
+.add-duration input, 
+.add-price-type select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: white;
+}
+
+.add-service p {
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.add-service-btn {
+    background-color: #FF4C24;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.add-service-btn:hover {
+    background-color: #e43e1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .add-service {
+        width: 90%;
+    }
+    
+    .add-category-section, 
+    .add-service-details {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .add-category, 
+    .add-price, 
+    .add-duration, 
+    .add-price-type {
+        width: 100%;
+    }
+}

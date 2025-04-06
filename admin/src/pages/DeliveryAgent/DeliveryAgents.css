@@ -1,0 +1,162 @@
+.delivery-agents-admin {
+    flex: 1;
+    padding: 20px;
+}
+
+.agents-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.agents-header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.add-agent-btn {
+    background-color: #FF4C24;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.add-agent-btn:hover {
+    background-color: #e43e1a;
+}
+
+.loading, .no-agents {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.no-agents button {
+    background-color: #FF4C24;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.agents-table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+}
+
+.agents-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.agents-table th, 
+.agents-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.agents-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.agent-image-cell img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rating-cell {
+    white-space: nowrap;
+}
+
+.rating-value {
+    font-weight: 600;
+}
+
+.rating-star {
+    color: #FFC107;
+    margin-left: 3px;
+}
+
+.status-toggle {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #eee;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.status-toggle.active {
+    background-color: #4caf50;
+    color: white;
+    padding-left: 25px;
+}
+
+.status-toggle.inactive {
+    background-color: #f44336;
+    color: white;
+    padding-right: 25px;
+}
+
+.toggle-slider {
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.3s;
+}
+
+.status-toggle.active .toggle-slider {
+    left: 5px;
+}
+
+.status-toggle.inactive .toggle-slider {
+    right: 5px;
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.edit-btn, .delete-btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.edit-btn {
+    background-color: #2196F3;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0d8bf2;
+}
+
+.delete-btn:hover {
+    background-color: #e53935;
+}
