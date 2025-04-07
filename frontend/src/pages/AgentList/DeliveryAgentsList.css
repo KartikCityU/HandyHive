@@ -6,17 +6,17 @@
 
 .agents-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .agents-header h1 {
-    font-size: 28px;
+    font-size: 32px;
     color: #333;
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
 }
 
 .agents-header p {
-    font-size: 16px;
+    font-size: 17px;
     color: #777;
     margin: 0;
 }
@@ -25,11 +25,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 30px;
+    padding: 20px;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .filter-option {
@@ -41,34 +41,35 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
 }
 
 .filter-option input[type="checkbox"] {
-    margin-right: 8px;
+    margin-right: 10px;
+    transform: scale(1.2);
 }
 
 .sort-options {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 .sort-options span {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
 }
 
 .sort-options button {
     background: none;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 6px 12px;
-    font-size: 14px;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 15px;
     color: #555;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
 }
 
 .sort-options button:hover {
@@ -94,20 +95,20 @@
     font-size: 16px;
     color: #777;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .agents-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px; /* Increased gap between cards */
 }
 
 @media (max-width: 768px) {
     .agents-filter-sort {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         align-items: flex-start;
     }
     
@@ -118,5 +119,6 @@
     
     .agents-grid {
         grid-template-columns: 1fr;
+        gap: 30px; /* Slightly reduced gap for mobile */
     }
 }

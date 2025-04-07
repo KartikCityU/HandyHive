@@ -29,7 +29,7 @@ const StoreContextProvider = (props) => {
         { category_name: "HVAC", category_image: hvac },
         { category_name: "Driver", category_image: driver },
         { category_name: "Home Repair", category_image: repair },
-        { category_name: "Repair", category_image: appliance },
+        { category_name: "Appliance Repair", category_image: appliance },
         { category_name: "Landscaping", category_image: landscaping }
     ];
 

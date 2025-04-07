@@ -32,7 +32,9 @@ export const getAgentById = async (req, res) => {
 export const addAgent = async (req, res) => {
   try {
     // Get file information from multer
+    console.log("File received:", req.file); // Debug log
     let profileImage = req.file ? req.file.filename : 'default-agent.png';
+    console.log("Profile image name:", profileImage); // Debug log
     
     // Extract data from request body
     const { name, email, phone, address, city, bio, serviceType } = req.body;
@@ -48,8 +50,10 @@ export const addAgent = async (req, res) => {
       profileImage: profileImage,
     });
     
-    await newAgent.save();
-    res.json({ success: true, message: "Agent added successfully", data: newAgent });
+    const savedAgent = await newAgent.save();
+    console.log("Agent saved with image:", savedAgent.profileImage); // Debug log
+    
+    res.json({ success: true, message: "Agent added successfully", data: savedAgent });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error adding agent: " + error.message });
