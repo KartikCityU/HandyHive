@@ -23,32 +23,39 @@ const DeliveryAgents = () => {
       if (response.data.success) {
         setAgents(response.data.data);
       } else {
-        toast.error("Failed to fetch delivery agents");
+        toast.error("Failed to fetch service partners");
       }
     } catch (error) {
       console.error("Error fetching agents:", error);
-      toast.error("Error fetching agents");
+      toast.error("Error fetching service partners");
     } finally {
       setLoading(false);
     }
   };
   
   const handleDelete = async (agentId) => {
-    if (window.confirm("Are you sure you want to delete this delivery agent?")) {
+    if (window.confirm("Are you sure you want to delete this service partner?")) {
       try {
         const response = await axios.delete(`${API_URL}/api/agents/${agentId}`);
         
         if (response.data.success) {
           setAgents(agents.filter(agent => agent._id !== agentId));
-          toast.success("Delivery agent deleted successfully");
+          toast.success("Service partner deleted successfully");
         } else {
-          toast.error(response.data.message || "Failed to delete agent");
+          toast.error(response.data.message || "Failed to delete service partner");
         }
       } catch (error) {
         console.error("Error deleting agent:", error);
-        toast.error("Error deleting agent");
+        toast.error("Error deleting service partner");
       }
     }
+  };
+
+  const getProfileImageUrl = (imageName) => {
+    if (!imageName || imageName === 'default-agent.png') {
+      return '/images/default-agent.png'; // Default image path
+    }
+    return `${API_URL}/images/agents/${imageName}`;
   };
   
   return (
@@ -64,22 +71,24 @@ const DeliveryAgents = () => {
       </div>
       
       {loading ? (
-        <div className="loading">Loading delivery agents...</div>
+        <div className="loading">Loading service partners...</div>
       ) : agents.length === 0 ? (
         <div className="no-agents">
-          <p>No delivery agents found.</p>
-          <button onClick={() => navigate('/add-agent')}>Add your first delivery partner</button>
+          <p>No service partners found.</p>
+          <button onClick={() => navigate('/add-agent')}>Add your first service partner</button>
         </div>
       ) : (
         <div className="agents-table-container">
           <table className="agents-table">
             <thead>
               <tr>
+                <th>Photo</th>
                 <th>Name</th>
                 <th>Contact</th>
+                <th>Service Type</th>
                 <th>City</th>
                 <th>Rating</th>
-                <th>Deliveries</th>
+                <th>Services</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -87,13 +96,42 @@ const DeliveryAgents = () => {
             <tbody>
               {agents.map(agent => (
                 <tr key={agent._id}>
+                  <td className="agent-photo-cell">
+                    <div className="agent-photo-container">
+                      <img 
+                        src={getProfileImageUrl(agent.profileImage)} 
+                        alt={agent.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/default-agent.png';
+                        }}
+                        className="agent-photo"
+                      />
+                    </div>
+                  </td>
                   <td>{agent.name}</td>
                   <td>{agent.phone}</td>
+                  <td>{agent.serviceType}</td>
                   <td>{agent.city}</td>
-                  <td>{agent.averageRating || 0}</td>
-                  <td>{agent.completedDeliveries || 0}</td>
-                  <td>{agent.activeStatus ? 'Active' : 'Inactive'}</td>
+                  <td className="rating-cell">
+                    <div className="rating-display">
+                      <span className="rating-value">{agent.averageRating || 0}</span>
+                      <span className="rating-star">★</span>
+                    </div>
+                  </td>
+                  <td>{agent.completedServices || 0}</td>
                   <td>
+                    <span className={`status-badge ${agent.activeStatus ? 'active' : 'inactive'}`}>
+                      {agent.activeStatus ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="actions-cell">
+                    <button 
+                      className="view-btn"
+                      onClick={() => navigate(`/service-partner/${agent._id}`)}
+                    >
+                      View
+                    </button>
                     <button 
                       className="delete-btn"
                       onClick={() => handleDelete(agent._id)}

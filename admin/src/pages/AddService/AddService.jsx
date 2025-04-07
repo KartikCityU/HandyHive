@@ -12,7 +12,10 @@ const AddService = () => {
         price: "",
         category: "Plumbing",
         duration: 60,
-        priceType: "fixed"
+        priceType: "fixed",
+        requiresConsultation: false,
+        minimumCharge: "",
+        tags: ""
     });
 
     const serviceCategories = [
@@ -20,7 +23,7 @@ const AddService = () => {
         "Electrical",
         "Cleaning",
         "Painting",
-        "Carpentry",
+        "Driver",
         "Home Repair",
         "Appliance Repair",
         "Gardening",
@@ -43,6 +46,20 @@ const AddService = () => {
         formData.append("category", data.category);
         formData.append("duration", Number(data.duration));
         formData.append("priceType", data.priceType);
+        formData.append("requiresConsultation", data.requiresConsultation);
+        
+        // Only add minimum charge if price type is not fixed and a value is provided
+        if (data.priceType !== "fixed" && data.minimumCharge) {
+            formData.append("minimumCharge", Number(data.minimumCharge));
+        }
+        
+        // Process tags - convert comma-separated string to array
+        if (data.tags.trim()) {
+            const tagsArray = data.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+            formData.append("tags", JSON.stringify(tagsArray));
+        }
+        
+        // Add the image file
         formData.append("image", image);
         
         try {
@@ -55,7 +72,10 @@ const AddService = () => {
                     price: "",
                     category: data.category,
                     duration: 60,
-                    priceType: "fixed"
+                    priceType: "fixed",
+                    requiresConsultation: false,
+                    minimumCharge: "",
+                    tags: ""
                 });
                 setImage(false);
             } else {
@@ -69,7 +89,7 @@ const AddService = () => {
 
     const onChangeHandler = (event) => {
         const name = event.target.name;
-        const value = event.target.value;
+        const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
         setData(data => ({ ...data, [name]: value }));
     }
 
@@ -164,6 +184,54 @@ const AddService = () => {
                             <option value="estimate">Estimate (Final price may vary)</option>
                         </select>
                     </div>
+                </div>
+                
+                {data.priceType !== "fixed" && (
+                    <div className='add-minimum-charge flex-col'>
+                        <p>Minimum Charge {data.priceType === "estimate" ? "(Optional)" : ""}</p>
+                        <input 
+                            type="Number" 
+                            name='minimumCharge' 
+                            onChange={onChangeHandler} 
+                            value={data.minimumCharge} 
+                            placeholder='e.g. 50' 
+                            required={data.priceType === "hourly"}
+                        />
+                        <small className="input-hint">
+                            Minimum amount customer will be charged even for small jobs
+                        </small>
+                    </div>
+                )}
+                
+                <div className='add-service-tags flex-col'>
+                    <p>Service Tags (Optional)</p>
+                    <input 
+                        type="text" 
+                        name='tags' 
+                        onChange={onChangeHandler} 
+                        value={data.tags} 
+                        placeholder='e.g. emergency, water, same-day (comma separated)' 
+                    />
+                    <small className="input-hint">
+                        Add keywords to help customers find this service, separated by commas
+                    </small>
+                </div>
+                
+                <div className='add-consultation-requirement'>
+                    <label className="consultation-checkbox-label">
+                        <input 
+                            type="checkbox" 
+                            name="requiresConsultation" 
+                            checked={data.requiresConsultation} 
+                            onChange={onChangeHandler}
+                        />
+                        <span>This service requires an initial consultation</span>
+                    </label>
+                    {data.requiresConsultation && (
+                        <p className="consultation-hint">
+                            When checked, customers will be informed that an initial consultation is required before the service can be performed.
+                        </p>
+                    )}
                 </div>
                 
                 <button type='submit' className='add-service-btn'>ADD SERVICE</button>

@@ -5,10 +5,10 @@ import { assets } from '../../assets/assets';
 
 const DeliveryAgentCard = ({ agent }) => {
     const navigate = useNavigate();
-    const { _id, name, profileImage,bio, averageRating, completedServices, activeStatus, serviceType } = agent;
+    const { _id, name, profileImage, bio, averageRating, completedServices, activeStatus, serviceType } = agent;
     
     // Format the average rating to display with one decimal place
-    const formattedRating = parseFloat(averageRating).toFixed(1);
+    const formattedRating = parseFloat(averageRating || 0).toFixed(1);
     
     // Navigate to agent details page when clicked
     const handleClick = () => {
@@ -23,9 +23,13 @@ const DeliveryAgentCard = ({ agent }) => {
             
             <div className="agent-image-container">
                 <img 
-                    src={profileImage ? `${import.meta.env.VITE_API_URL}/uploads/agents/${profileImage}` : assets.default_profile}
+                    src={profileImage ? `${import.meta.env.VITE_API_URL}/images/agents/${profileImage}` : assets.default_profile}
                     alt={name} 
                     className="agent-image"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = assets.default_profile;
+                    }}
                 />
             </div>
             
@@ -57,7 +61,7 @@ const DeliveryAgentCard = ({ agent }) => {
                 </p>
                 
                 <p className="agent-deliveries">
-                    <span className="delivery-count">{completedServices}</span> services completed
+                    <span className="delivery-count">{completedServices || 0}</span> services completed
                 </p>
             </div>
         </div>

@@ -8,6 +8,7 @@ const AddAgent = () => {
   const navigate = useNavigate();
   const API_URL = 'http://localhost:4000';
   
+  const [profileImage, setProfileImage] = useState(false); // Changed from null to false
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -20,15 +21,43 @@ const AddAgent = () => {
   
   const onChangeHandler = (event) => {
     const name = event.target.name;
-    const value = event.target.value;
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setData(data => ({ ...data, [name]: value }));
+  };
+  
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
+    }
+    e.target.value = '';
   };
   
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     
+    if (!profileImage) {
+      toast.error('Profile image not selected');
+      return null;
+    }
+    
+    const formData = new FormData();
+    
+    // Append all text data directly like in your working example
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("address", data.address);
+    formData.append("city", data.city);
+    formData.append("bio", data.bio);
+    formData.append("serviceType", data.serviceType);
+    
+    // Append profile image
+    formData.append("profileImage", profileImage);
+    
     try {
-      const response = await axios.post(`${API_URL}/api/agents/add`, data);
+      const response = await axios.post(`${API_URL}/api/agents/add`, formData);
+      
       if (response.data.success) {
         toast.success("Service agent added successfully");
         navigate('/delivery-agents');
@@ -43,7 +72,34 @@ const AddAgent = () => {
   
   return (
     <div className='add'>
+      <h2>Add New Service Partner</h2>
       <form className='flex-col' onSubmit={onSubmitHandler}>
+        <div className='add-profile-image'>
+          <p>Profile Photo</p>
+          <input 
+            onChange={handleImageChange} 
+            type="file" 
+            accept="image/*" 
+            id="profileImage" 
+            hidden 
+          />
+          <label htmlFor="profileImage" className='profile-image-upload'>
+            {profileImage ? (
+              <img 
+                src={URL.createObjectURL(profileImage)} 
+                alt="Profile Preview" 
+                className="profile-preview" 
+              />
+            ) : (
+              <div className="profile-placeholder">
+                <i className="upload-icon">+</i>
+                <span>Upload Photo</span>
+              </div>
+            )}
+          </label>
+        </div>
+        
+        {/* Rest of the form remains the same */}
         <div className='add-field flex-col'>
           <p>Name</p>
           <input 
@@ -112,9 +168,10 @@ const AddAgent = () => {
               <option value="Electrician">Electrician</option>
               <option value="Cleaner">Cleaner</option>
               <option value="HVAC">HVAC</option>
+              <option value="Hairdresser">Hairdresser</option>
+              <option value="Pest Control">Pest Control</option>
             </select>
           </div>
-          
         </div>
         
         <div className='add-field flex-col'>
@@ -124,7 +181,7 @@ const AddAgent = () => {
             onChange={onChangeHandler} 
             value={data.bio} 
             rows={4} 
-            placeholder='Brief description about the delivery partner' 
+            placeholder='Brief description about the service partner' 
           />
         </div>
         

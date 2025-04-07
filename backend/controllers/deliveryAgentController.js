@@ -31,7 +31,11 @@ export const getAgentById = async (req, res) => {
 // Add a new delivery agent
 export const addAgent = async (req, res) => {
   try {
-    const { name, email, phone, address, city, bio, vehicleType, vehicleNumber } = req.body;
+    // Get file information from multer
+    let profileImage = req.file ? req.file.filename : 'default-agent.png';
+    
+    // Extract data from request body
+    const { name, email, phone, address, city, bio, serviceType } = req.body;
     
     const newAgent = new DeliveryAgent({
       name,
@@ -40,15 +44,15 @@ export const addAgent = async (req, res) => {
       address,
       city,
       bio: bio || "",
-      vehicleType: vehicleType || "Bike",
-      vehicleNumber: vehicleNumber || ""
+      serviceType: serviceType || "Plumber",
+      profileImage: profileImage,
     });
     
     await newAgent.save();
     res.json({ success: true, message: "Agent added successfully", data: newAgent });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error adding agent" });
+    res.json({ success: false, message: "Error adding agent: " + error.message });
   }
 };
 
@@ -56,7 +60,12 @@ export const addAgent = async (req, res) => {
 export const updateAgent = async (req, res) => {
   try {
     const agentId = req.params.id;
-    const updateData = req.body;
+    const updateData = {...req.body};
+    
+    // Add profile image if a new one was uploaded
+    if (req.file) {
+      updateData.profileImage = req.file.filename;
+    }
     
     const updatedAgent = await DeliveryAgent.findByIdAndUpdate(
       agentId,
@@ -84,6 +93,13 @@ export const deleteAgent = async (req, res) => {
     
     if (!deletedAgent) {
       return res.json({ success: false, message: "Agent not found" });
+    }
+    
+    // Delete the profile image if it exists and is not the default
+    if (deletedAgent.profileImage && deletedAgent.profileImage !== 'default-agent.png') {
+      fs.unlink(`uploads/agents/${deletedAgent.profileImage}`, (err) => {
+        if (err) console.log("Error deleting profile image:", err);
+      });
     }
     
     res.json({ success: true, message: "Agent deleted successfully" });

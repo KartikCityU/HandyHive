@@ -2,6 +2,16 @@ import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 export const StoreContext = createContext(null);
 
+// Import service category images
+import plumbing from "../assets/images/plumbing.png";
+import electrical from "../assets/images/Electrician.png";
+import cleaning from "../assets/images/cleaning.png";
+import landscaping from "../assets/images/landscaping.png";
+import driver from "../assets/images/driver.png";
+import repair from "../assets/images/homedecor.png";
+import appliance from "../assets/images/appliance.png";
+import hvac from "../assets/images/hvac.png";
+
 const StoreContextProvider = (props) => {
     const url = "http://localhost:4000";
     const [service_list, setServiceList] = useState([]);
@@ -11,40 +21,16 @@ const StoreContextProvider = (props) => {
     const currency = "$";
     const deliveryCharge = 5;
 
-    // Define service categories
+    // Define service categories with imported images
     const service_categories = [
-        {
-            category_name: "Plumbing",
-            category_image: "/images/categories/plumbing.jpg"
-        },
-        {
-            category_name: "Electrical",
-            category_image: "/images/categories/electrical.jpg"
-        },
-        {
-            category_name: "Cleaning",
-            category_image: "/images/categories/cleaning.jpg"
-        },
-        {
-            category_name: "Painting",
-            category_image: "/images/categories/painting.jpg"
-        },
-        {
-            category_name: "Carpentry",
-            category_image: "/images/categories/carpentry.jpg"
-        },
-        {
-            category_name: "Home Repair",
-            category_image: "/images/categories/repair.jpg"
-        },
-        {
-            category_name: "Appliance Repair",
-            category_image: "/images/categories/appliance.jpg"
-        },
-        {
-            category_name: "Gardening",
-            category_image: "/images/categories/gardening.jpg"
-        }
+        { category_name: "Plumbing", category_image: plumbing },
+        { category_name: "Electrical", category_image: electrical },
+        { category_name: "Cleaning", category_image: cleaning },
+        { category_name: "HVAC", category_image: hvac },
+        { category_name: "Driver", category_image: driver },
+        { category_name: "Home Repair", category_image: repair },
+        { category_name: "Repair", category_image: appliance },
+        { category_name: "Landscaping", category_image: landscaping }
     ];
 
     const addToCart = async (itemId, formData = null) => {
@@ -163,9 +149,9 @@ const StoreContextProvider = (props) => {
                     // Add overall customer info if needed
                     customerName: Object.values(cartItemDetails)[0]?.customerName || "",
                     serviceDate: Object.values(cartItemDetails)[0]?.serviceDate || 
-                               Object.values(cartItemDetails)[0]?.deliveryDate || "",
+                              Object.values(cartItemDetails)[0]?.deliveryDate || "",
                     serviceTime: Object.values(cartItemDetails)[0]?.serviceTime || 
-                               Object.values(cartItemDetails)[0]?.deliveryTime || "",
+                              Object.values(cartItemDetails)[0]?.deliveryTime || "",
                     specialRequests: Object.values(cartItemDetails)[0]?.specialRequests || ""
                 };
                 

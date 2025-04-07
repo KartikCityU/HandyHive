@@ -43,12 +43,18 @@
     border-color: #FF4C24;
 }
 
-.add-service-name, .add-service-description {
+.add-service-name, 
+.add-service-description,
+.add-minimum-charge,
+.add-service-tags {
     width: 100%;
     max-width: 600px;
 }
 
-.add-service-name input, .add-service-description textarea {
+.add-service-name input, 
+.add-service-description textarea,
+.add-minimum-charge input,
+.add-service-tags input {
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -57,7 +63,9 @@
 }
 
 .add-service-name input:focus, 
-.add-service-description textarea:focus {
+.add-service-description textarea:focus,
+.add-minimum-charge input:focus,
+.add-service-tags input:focus {
     outline: none;
     border-color: #FF4C24;
     box-shadow: 0 0 0 2px rgba(255, 76, 36, 0.1);
@@ -104,12 +112,63 @@
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
+    margin-top: 25px;
 }
 
 .add-service-btn:hover {
     background-color: #e43e1a;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* New styles for consultation requirement */
+.add-consultation-requirement {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    border-left: 4px solid #FF4C24;
+}
+
+.consultation-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.consultation-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #FF4C24;
+}
+
+.consultation-checkbox-label span {
+    font-weight: 500;
+}
+
+.consultation-hint {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    margin-left: 28px;
+    font-style: italic;
+}
+
+/* Styles for hints */
+.input-hint {
+    font-size: 13px;
+    color: #777;
+    margin-top: 6px;
+    font-weight: normal;
+}
+
+.add-minimum-charge,
+.add-service-tags {
+    margin-top: 15px;
 }
 
 @media (max-width: 768px) {

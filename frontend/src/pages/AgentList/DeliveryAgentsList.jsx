@@ -49,8 +49,8 @@ const DeliveryAgentsList = () => {
     return (
         <div className="delivery-agents-list-container">
             <div className="agents-header">
-                <h1>Our Delivery Partners</h1>
-                <p>Meet our team of professional delivery agents ready to serve you</p>
+                <h1>Our Service Partners</h1>
+                <p>Meet our team of professional service agents ready to serve you</p>
             </div>
             
             <div className="agents-filter-sort">
@@ -83,12 +83,12 @@ const DeliveryAgentsList = () => {
             </div>
             
             {loading ? (
-                <div className="loading-agents">Loading delivery agents...</div>
+                <div className="loading-agents">Loading service agents...</div>
             ) : filteredAndSortedAgents.length === 0 ? (
                 <div className="no-agents-found">
                     {filterActive 
                         ? "No available agents at the moment. Please try again later."
-                        : "No delivery agents found."}
+                        : "No service agents found."}
                 </div>
             ) : (
                 <div className="agents-grid">

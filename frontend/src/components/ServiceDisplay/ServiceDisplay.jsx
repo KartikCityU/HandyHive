@@ -11,16 +11,23 @@ const ServiceDisplay = ({category}) => {
     <div className='service-display' id='service-display'>
       <h2>Services in demand</h2>
       <div className='service-display-list'>
-        {service_list.map((item) => {
-          if (category === "All" || category === item.category) {
+        {service_list.map((service) => {
+          if (category === "All" || category === service.category) {
             return (
               <ServiceItem 
-                key={item._id} 
-                image={item.image} 
-                name={item.name} 
-                desc={item.description} 
-                price={item.price} 
-                id={item._id}
+              key={service._id}
+              id={service._id}
+              name={service.name}
+              price={service.price}
+              desc={service.description}
+              image={service.image}
+              category={service.category}
+              duration={service.duration}
+              priceType={service.priceType}  // Make sure these props are included
+              minimumCharge={service.minimumCharge}
+              requiresConsultation={service.requiresConsultation}
+              tags={service.tags}
+              availableDaysInWeek={service.availableDaysInWeek}
               />
             )
           }
