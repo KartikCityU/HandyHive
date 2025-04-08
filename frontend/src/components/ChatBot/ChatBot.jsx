@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './ChatBot.css';
 
 const ChatBot = () => {
@@ -7,32 +8,62 @@ const ChatBot = () => {
     { text: "Hi there! How can I help you today?", sender: "bot" }
   ]);
   const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = () => {
+  // DeepSeek API configuration
+  const DEEPSEEK_API_KEY = 'sk-7bb4620fb26442e4a868a6bd1d2894c8'; // Replace with your actual API key
+  const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+  const handleSendMessage = async () => {
     if (inputText.trim() === '') return;
     
     // Add user message
-    setMessages([...messages, { text: inputText, sender: 'user' }]);
-    
-    // Process response (Simple pre-defined responses)
-    setTimeout(() => {
-      let botResponse = "I'm sorry, I don't understand. Could you try asking something else?";
-      
-      const userInput = inputText.toLowerCase();
-      if (userInput.includes('book') || userInput.includes('service')) {
-        botResponse = "To book a service, simply browse our services, select the one you need, and click 'Book Now'.";
-      } else if (userInput.includes('cancel')) {
-        botResponse = "You can cancel a booking by going to 'My Bookings' and selecting the cancel option.";
-      } else if (userInput.includes('price') || userInput.includes('cost')) {
-        botResponse = "Prices vary depending on the service. You can see the price for each service on its details page.";
-      } else if (userInput.includes('hello') || userInput.includes('hi')) {
-        botResponse = "Hello! How can I assist you with our home services today?";
-      }
-      
-      setMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
-    }, 500);
-    
+    const updatedMessages = [...messages, { text: inputText, sender: 'user' }];
+    setMessages(updatedMessages);
     setInputText('');
+    setIsLoading(true);
+    
+    try {
+      // Call DeepSeek API
+      const response = await axios.post(
+        DEEPSEEK_API_URL,
+        {
+          model: "deepseek-chat", // DeepSeek's chat model
+          messages: [
+            { 
+              role: "system", 
+              content: "You are a helpful assistant for a home services company. Provide clear, concise, and helpful responses about booking services, cancellations, and pricing. Be friendly and professional." 
+            },
+            ...updatedMessages.map(msg => ({
+              role: msg.sender === 'user' ? 'user' : 'assistant', 
+              content: msg.text
+            }))
+          ],
+          max_tokens: 150,
+          temperature: 0.7
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Extract bot response
+      const botResponse = response.data.choices[0].message.content.trim();
+      
+      // Add bot response to messages
+      setMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
+    } catch (error) {
+      console.error('Error calling DeepSeek API:', error);
+      setMessages(prev => [...prev, { 
+        text: "I'm experiencing some technical difficulties. Please try again later.", 
+        sender: 'bot' 
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +88,11 @@ const ChatBot = () => {
                 {msg.text}
               </div>
             ))}
+            {isLoading && (
+              <div className="message bot loading">
+                Typing...
+              </div>
+            )}
           </div>
           
           <div className="chatbot-input">
@@ -66,8 +102,14 @@ const ChatBot = () => {
               onChange={(e) => setInputText(e.target.value)}
               placeholder="Type your question..."
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              disabled={isLoading}
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <button 
+              onClick={handleSendMessage} 
+              disabled={isLoading}
+            >
+              Send
+            </button>
           </div>
         </div>
       )}
