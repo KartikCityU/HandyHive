@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './ChatBot.css';
+import deepseek from "../../assets/images/deepseek.png.webp"
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -110,6 +111,15 @@ const ChatBot = () => {
             >
               Send
             </button>
+          </div>
+          
+          <div className="chatbot-powered-by">
+            <span>Powered by</span>
+            <img 
+              src={deepseek} 
+              alt="DeepSeek Logo" 
+              className="deepseek-logo-image" 
+            />
           </div>
         </div>
       )}

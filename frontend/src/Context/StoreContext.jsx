@@ -3,6 +3,7 @@ import axios from "axios";
 export const StoreContext = createContext(null);
 
 // Import service category images
+
 import plumbing from "../assets/images/plumbing.png";
 import electrical from "../assets/images/Electrician.png";
 import cleaning from "../assets/images/cleaning.png";
