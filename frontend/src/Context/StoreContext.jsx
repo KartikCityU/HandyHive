@@ -35,6 +35,20 @@ const StoreContextProvider = (props) => {
         { category_name: "Landscaping", category_image: landscaping }
     ];
 
+    // Normalize form data to ensure consistent naming
+    const normalizeFormData = (formData) => {
+        if (!formData) return null;
+        
+        return {
+            ...formData,
+            // Ensure both naming conventions are available
+            serviceDate: formData.serviceDate || formData.deliveryDate || "",
+            deliveryDate: formData.deliveryDate || formData.serviceDate || "",
+            serviceTime: formData.serviceTime || formData.deliveryTime || "",
+            deliveryTime: formData.deliveryTime || formData.serviceTime || ""
+        };
+    };
+
     const addToCart = async (itemId, formData = null) => {
         if (!cartItems[itemId]) {
             setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
@@ -42,11 +56,12 @@ const StoreContextProvider = (props) => {
             setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
         }
         
-        // Store form data if provided
+        // Store normalized form data if provided
         if (formData) {
+            const normalizedData = normalizeFormData(formData);
             setCartItemDetails((prev) => ({
                 ...prev,
-                [itemId]: formData
+                [itemId]: normalizedData
             }));
         }
         
@@ -54,7 +69,7 @@ const StoreContextProvider = (props) => {
             // Update the API call to include form data
             await axios.post(url + "/api/cart/add", { 
                 itemId,
-                formData
+                formData: formData ? normalizeFormData(formData) : null
             }, { headers: { token } });
         }
     };
@@ -120,9 +135,13 @@ const StoreContextProvider = (props) => {
             const response = await axios.post(url + "/api/cart/get", {}, { headers: token });
             setCartItems(response.data.cartData || {});
             
-            // Load cart item details if available in the response
+            // Load and normalize cart item details if available in the response
             if (response.data.cartItemDetails) {
-                setCartItemDetails(response.data.cartItemDetails);
+                const normalizedDetails = {};
+                Object.keys(response.data.cartItemDetails).forEach(itemId => {
+                    normalizedDetails[itemId] = normalizeFormData(response.data.cartItemDetails[itemId]);
+                });
+                setCartItemDetails(normalizedDetails);
             }
         } catch (error) {
             console.error("Error loading cart data:", error);
@@ -134,26 +153,33 @@ const StoreContextProvider = (props) => {
         try {
             if (token) {
                 const orderData = {
-                    items: Object.keys(cartItems).map(itemId => ({
-                        itemId,
-                        quantity: cartItems[itemId],
-                        // Include form data if available for this item
-                        ...(cartItemDetails[itemId] ? {
-                            customerName: cartItemDetails[itemId].customerName,
-                            serviceDate: cartItemDetails[itemId].serviceDate || cartItemDetails[itemId].deliveryDate,
-                            serviceTime: cartItemDetails[itemId].serviceTime || cartItemDetails[itemId].deliveryTime,
-                            address: cartItemDetails[itemId].address || "",
-                            specialRequests: cartItemDetails[itemId].specialRequests
-                        } : {})
-                    })),
+                    items: Object.keys(cartItems).map(itemId => {
+                        const details = cartItemDetails[itemId] || {};
+                        return {
+                            itemId,
+                            quantity: cartItems[itemId],
+                            // Include form data if available for this item
+                            customerName: details.customerName || "",
+                            serviceDate: details.serviceDate || details.deliveryDate || "",
+                            deliveryDate: details.deliveryDate || details.serviceDate || "",
+                            serviceTime: details.serviceTime || details.deliveryTime || "",
+                            deliveryTime: details.deliveryTime || details.serviceTime || "",
+                            address: details.address || "",
+                            specialRequests: details.specialRequests || ""
+                        };
+                    }),
                     amount: getTotalCartAmount() + deliveryCharge,
                     address,
                     // Add overall customer info if needed
                     customerName: Object.values(cartItemDetails)[0]?.customerName || "",
                     serviceDate: Object.values(cartItemDetails)[0]?.serviceDate || 
                               Object.values(cartItemDetails)[0]?.deliveryDate || "",
+                    deliveryDate: Object.values(cartItemDetails)[0]?.deliveryDate || 
+                              Object.values(cartItemDetails)[0]?.serviceDate || "",
                     serviceTime: Object.values(cartItemDetails)[0]?.serviceTime || 
                               Object.values(cartItemDetails)[0]?.deliveryTime || "",
+                    deliveryTime: Object.values(cartItemDetails)[0]?.deliveryTime || 
+                              Object.values(cartItemDetails)[0]?.serviceTime || "",
                     specialRequests: Object.values(cartItemDetails)[0]?.specialRequests || ""
                 };
                 

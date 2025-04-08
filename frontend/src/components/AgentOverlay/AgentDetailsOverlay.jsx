@@ -5,122 +5,170 @@ import './AgentDetailsOverlay.css';
 
 const AgentDetailsOverlay = ({ agent, onClose }) => {
     const { url } = useContext(StoreContext);
-    const { 
-        name, 
-        profileImage, 
-        bio, 
-        averageRating, 
-        completedServices, 
-        activeStatus, 
-        serviceType, 
-        contact,
+    const {
+        name,
+        profileImage,
+        bio,
+        rating,
+        completedServices,
+        activeStatus,
+        serviceType,
         email,
-        specializations
+        phone,
+        address,
+        city,
+        joiningDate,
+        reviews
     } = agent;
 
-    // Format the average rating to display with one decimal place
-    const formattedRating = parseFloat(averageRating || 0).toFixed(1);
+    // Format the rating to display with one decimal place
+    const formattedRating = parseFloat(rating || 0).toFixed(1);
 
-    // Render star rating
+    // Format date to be more readable
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    // Render stars with proper half-star support
     const renderStars = () => {
-        return [1, 2, 3, 4, 5].map((star) => (
-            <span 
-                key={star} 
-                className={`star ${formattedRating >= star ? 'filled' : formattedRating >= star - 0.5 ? 'half-filled' : ''}`}
-            >
-                ★
-            </span>
-        ));
+        const stars = [];
+        const ratingValue = parseFloat(formattedRating);
+        
+        for (let i = 1; i <= 5; i++) {
+            if (ratingValue >= i) {
+                // Full star
+                stars.push(<span key={i} className="star filled">★</span>);
+            } else if (ratingValue >= i - 0.5) {
+                // Half star
+                stars.push(
+                    <span key={i} className="star half-filled">
+                        <span className="half-star-overlay">★</span>
+                    </span>
+                );
+            } else {
+                // Empty star
+                stars.push(<span key={i} className="star">★</span>);
+            }
+        }
+        
+        return stars;
+    };
+
+    // Close the overlay when clicking outside the content
+    const handleBackdropClick = (e) => {
+        if (e.target.className === 'agent-details-overlay') {
+            onClose();
+        }
     };
 
     return (
-        <div className="agent-details-overlay">
-            <div className="agent-details-container">
-                <button className="close-button" onClick={onClose}>
-                    &times;
-                </button>
+        <div className="agent-details-overlay" onClick={handleBackdropClick}>
+            <div className="agent-details-content">
+                <button className="close-button" onClick={onClose}>×</button>
                 
-                <div className="agent-details-content">
-                    <div className="agent-details-header">
-                        <div className="agent-image-container">
-                            <img 
+                <div className="agent-header">
+                    <div className="agent-main-info">
+                        <div className="agent-avatar">
+                            <img
                                 src={profileImage ? `${url}/images/agents/${profileImage}` : assets.default_profile}
-                                alt={name} 
-                                className="agent-large-image"
+                                alt={name}
                                 onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = assets.default_profile;
                                 }}
                             />
-                            <div className={`status-indicator ${activeStatus ? 'available' : 'unavailable'}`}>
+                            <span className={`status-indicator ${activeStatus ? 'active' : 'inactive'}`}>
                                 {activeStatus ? 'Available' : 'Unavailable'}
-                            </div>
+                            </span>
                         </div>
                         
-                        <div className="agent-main-info">
-                            <h2 className="agent-name">{name}</h2>
-                            <div className="agent-rating">
+                        <div className="agent-identity">
+                            <h2>{name}</h2>
+                            <div className="agent-service-type">
+                                <span className="service-badge">{serviceType}</span>
+                            </div>
+                            
+                            <div className="agent-rating-display">
                                 <div className="stars-container">
                                     {renderStars()}
                                 </div>
                                 <span className="rating-value">{formattedRating}</span>
+                                <span className="rating-count">({reviews?.length || 0} reviews)</span>
                             </div>
                             
-                            {serviceType && (
-                                <div className="agent-service-type">
-                                    <span className="service-badge">{serviceType}</span>
-                                </div>
-                            )}
+                            <p className="services-count">
+                                <strong>{completedServices || 0}</strong> services completed
+                            </p>
                         </div>
                     </div>
-                    
-                    <div className="agent-details-body">
-                        <section className="agent-bio">
-                            <h3>About Me</h3>
-                            <p>{bio || 'No additional information available.'}</p>
-                        </section>
-                        
-                        <section className="agent-stats">
-                            <h3>Performance</h3>
-                            <div className="stats-grid">
-                                <div className="stat-item">
-                                    <span className="stat-label">Completed Services</span>
-                                    <span className="stat-value">{completedServices || 0}</span>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-label">Availability</span>
-                                    <span className="stat-value">{activeStatus ? 'Currently Active' : 'Not Available'}</span>
-                                </div>
-                            </div>
-                        </section>
-                        
-                        <section className="agent-contact">
-                            <h3>Contact Information</h3>
-                            {contact && (
-                                <div className="contact-item">
-                                    <span className="contact-label">Phone:</span>
-                                    <span className="contact-value">{contact}</span>
-                                </div>
-                            )}
-                            {email && (
-                                <div className="contact-item">
-                                    <span className="contact-label">Email:</span>
-                                    <span className="contact-value">{email}</span>
-                                </div>
-                            )}
-                        </section>
-                        
-                        {specializations && specializations.length > 0 && (
-                            <section className="agent-specializations">
-                                <h3>Specializations</h3>
-                                <div className="specializations-list">
-                                    {specializations.map((spec, index) => (
-                                        <span key={index} className="specialization-tag">{spec}</span>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                </div>
+                
+                <div className="agent-details-body">
+                    <div className="agent-bio-section">
+                        <h3>About</h3>
+                        <p>{bio || "No bio available"}</p>
                     </div>
+                    
+                    <div className="agent-details-section">
+                        <h3>Contact Information</h3>
+                        <ul className="contact-list">
+                            <li>
+                                <span className="contact-label">Email:</span>
+                                <span className="contact-value">{email}</span>
+                            </li>
+                            <li>
+                                <span className="contact-label">Phone:</span>
+                                <span className="contact-value">{phone}</span>
+                            </li>
+                            <li>
+                                <span className="contact-label">Address:</span>
+                                <span className="contact-value">{address}, {city}</span>
+                            </li>
+                            <li>
+                                <span className="contact-label">Joined:</span>
+                                <span className="contact-value">{formatDate(joiningDate)}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    {reviews && reviews.length > 0 ? (
+                        <div className="agent-reviews-section">
+                            <h3>Customer Reviews</h3>
+                            <div className="reviews-list">
+                                {reviews.map((review, index) => (
+                                    <div key={index} className="review-item">
+                                        <div className="review-header">
+                                            <strong>{review.userName}</strong>
+                                            <div className="review-rating">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <span key={i} className={`star ${i < review.rating ? 'filled' : ''}`}>★</span>
+                                                ))}
+                                            </div>
+                                            <span className="review-date">{formatDate(review.date)}</span>
+                                        </div>
+                                        <p className="review-comment">{review.comment}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="agent-reviews-section">
+                            <h3>Customer Reviews</h3>
+                            <p className="no-reviews">No reviews yet</p>
+                        </div>
+                    )}
+                </div>
+                
+                <div className="agent-details-footer">
+                    <button className="book-service-button" onClick={onClose}>
+                        Close
+                    </button>
                 </div>
             </div>
         </div>

@@ -83,9 +83,9 @@ const Order = () => {
             <p>{currency}{order.amount}</p>
             <div className="order-actions">
               <select onChange={(e) => statusHandler(e, order._id)} value={order.status} name="" id="">
-                <option value="Food Processing">Food Processing</option>
-                <option value="Out for delivery">Out for delivery</option>
-                <option value="Delivered">Delivered</option>
+                <option value="Food Processing">Processing</option>
+                <option value="Out for delivery">Partner on the Way !</option>
+                <option value="Delivered">Completed</option>
               </select>
               <button 
                 className="delete-btn" 

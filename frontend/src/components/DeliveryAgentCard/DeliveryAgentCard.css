@@ -1,271 +1,151 @@
 .delivery-agent-card {
-    position: relative;
-    display: flex;
+    background-color: white;
     border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    background-color: #ffffff;
-    margin-bottom: 24px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    align-items: center;
-}
-
-.delivery-agent-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.delivery-agent-card.inactive {
-    opacity: 0.85;
-    background-color: #f9f9f9;
-}
-
-.agent-status-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    background-color: #4CAF50;
-    color: white;
-    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
-    z-index: 1;
-}
-
-.delivery-agent-card.inactive .agent-status-badge {
-    background-color: #F44336;
-    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
-}
-
-.agent-image-container {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 24px;
     position: relative;
-}
-
-.agent-image {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .delivery-agent-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .agent-status-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .delivery-agent-card.inactive .agent-status-badge {
+    background-color: #F5E6E6;
+    color: #E56B6B;
+  }
+  
+  .delivery-agent-card:not(.inactive) .agent-status-badge {
+    background-color: #E6F5EB;
+    color: #4CAF50;
+  }
+  
+  .agent-image-container {
+    margin-bottom: 16px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
+  .agent-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.agent-info {
-    flex: 1;
+  }
+  
+  .agent-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-}
-
-.agent-name {
-    margin: 0 0 8px 0;
-    font-size: 20px;
-    color: #333;
+    flex: 1;
+    width: 100%;
+  }
+  
+  .agent-name {
+    font-size: 24px;
     font-weight: 600;
-    padding-right: 100px; /* Added to prevent overlap with status badge */
-}
-
-.agent-vehicle {
-    margin-bottom: 10px;
-}
-
-.vehicle-badge {
-    background-color: #F0F4F8;
-    color: #2C3E50;
-    padding: 4px 12px;
+    margin: 0 0 8px 0;
+    color: #333;
+  }
+  
+  .agent-vehicle {
+    margin-bottom: 12px;
+  }
+  
+  .vehicle-badge {
+    background-color: #F0F7FF;
+    color: #0063CC;
+    padding: 5px 12px;
     border-radius: 50px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
     display: inline-block;
-}
-
-.agent-rating {
+  }
+  
+  .agent-rating {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-}
-
-.stars-container {
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .stars-container {
     display: flex;
     margin-right: 8px;
-}
-
-.star {
-    color: #E0E0E0;
-    font-size: 18px;
-    margin-right: 2px;
-}
-
-.star.filled {
-    color: #FFC107;
-}
-
-.star.half-filled {
+  }
+  
+  .star {
+    color: #DADADA;
+    font-size: 20px;
+  }
+  
+  .star.filled {
+    color: #FFB400;
+  }
+  
+  .star.half-filled {
     position: relative;
-    color: #E0E0E0;
-}
-
-.star.half-filled::after {
-    content: '★';
+    color: #DADADA;
+  }
+  
+  .half-star-overlay {
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
     width: 50%;
     overflow: hidden;
-    color: #FFC107;
-}
-
-.rating-value {
+    color: #FFB400;
+  }
+  
+  .rating-value {
     font-weight: 600;
-    color: #555;
-    font-size: 16px;
-}
-
-.agent-deliveries {
-    margin: 4px 0;
-    font-size: 14px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .agent-bio {
     color: #666;
-    line-height: 1.4;
-    max-width: 240px;
-}
-
-.delivery-count {
-    font-weight: 600;
-    color: #FF4C24;
-}
-
-.agent-bio {
-    color: #666;
-    font-size: 14px;
-    margin-top: 6px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    /* Fix for consistent height */
+    min-height: 60px;
+    height: 60px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.4;
-}
-
-@media (max-width: 480px) {
-    .delivery-agent-card {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 20px 15px;
-        position: relative;
-    }
-    
-    .agent-status-badge {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-    }
-    
-    .agent-image-container {
-        width: 90px;
-        height: 90px;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-    
-    .agent-info {
-        align-items: center;
-        padding: 0;
-    }
-    
-    .agent-name {
-        padding-right: 0;
-    }
-    
-    .agent-rating {
-        justify-content: center;
-    }
-    
-    .agent-deliveries {
-        text-align: center;
-        max-width: 100%;
-    }
-}
-
-* Star Rating Component for forms and displays */
-.star-rating {
-  display: flex;
-  align-items: center;
-}
-
-.star {
-  font-size: 18px;
-  color: #ddd; /* Empty star color */
-  margin-right: 2px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.star:hover {
-  transform: scale(1.1);
-}
-
-.star.filled {
-  color: #FFBF00; /* Full star color - golden yellow */
-}
-
-.star.half-filled {
-  position: relative;
-  color: #ddd; /* Base color */
-}
-
-.star.half-filled .half-star-overlay {
-  position: absolute;
-  width: 50%;
-  overflow: hidden;
-  left: 0;
-  top: 0;
-  color: #FFBF00; /* Half star color - golden yellow */
-}
-
-.rating-value {
-  margin-left: 8px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.rating-container {
-  display: flex;
-  align-items: center;
-}
-
-/* Star display in tables/lists */
-.rating-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rating-star {
-  color: #FFBF00;
-  margin-left: 2px;
-  font-size: 18px;
-}
-
-/* Stars container in agent cards */
-.stars-container {
-  display: flex;
-  align-items: center;
-}
-
-/* Agent rating in cards */
-.agent-rating {
-  display: flex;
-  align-items: center;
-  margin: 5px 0;
-}
+  }
+  
+  .agent-deliveries {
+    margin-top: auto;
+    padding-top: 16px;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #F1F1F1;
+    width: 100%;
+  }
+  
+  .delivery-count {
+    color: #FF5A5F;
+    font-weight: 600;
+    font-size: 16px;
+  }

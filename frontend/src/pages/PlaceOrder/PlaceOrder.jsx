@@ -31,6 +31,39 @@ const PlaceOrder = () => {
         setData(data => ({ ...data, [name]: value }))
     }
 
+    // Function to safely format date
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Not specified';
+        try {
+            const date = new Date(dateString);
+            return date instanceof Date && !isNaN(date) 
+                ? date.toLocaleDateString() 
+                : 'Invalid Date Format';
+        } catch (e) {
+            return 'Invalid Date';
+        }
+    }
+
+    // Helper function to get service/delivery details with fallbacks
+    const getServiceDetail = (item, detailType) => {
+        if (!cartItemDetails || !cartItemDetails[item._id]) return null;
+        
+        const details = cartItemDetails[item._id];
+        
+        switch(detailType) {
+            case 'name':
+                return details.customerName || 'Not specified';
+            case 'date':
+                return formatDate(details.serviceDate || details.deliveryDate);
+            case 'time':
+                return details.serviceTime || details.deliveryTime || 'Not specified';
+            case 'requests':
+                return details.specialRequests || 'None';
+            default:
+                return null;
+        }
+    }
+
     const placeOrder = async (e) => {
         e.preventDefault()
         let orderItems = [];
@@ -39,16 +72,21 @@ const PlaceOrder = () => {
                 let itemInfo = item;
                 itemInfo["quantity"] = cartItems[item._id];
                 
-                // Add form data to the order item if available
+                // Add form data to the order item if available - handle both naming conventions
                 if (cartItemDetails && cartItemDetails[item._id]) {
                     itemInfo["customerName"] = cartItemDetails[item._id].customerName;
-                    itemInfo["deliveryDate"] = cartItemDetails[item._id].deliveryDate;
-                    itemInfo["deliveryTime"] = cartItemDetails[item._id].deliveryTime;
+                    // Handle both naming conventions
+                    itemInfo["serviceDate"] = cartItemDetails[item._id].serviceDate;
+                    itemInfo["deliveryDate"] = cartItemDetails[item._id].deliveryDate || cartItemDetails[item._id].serviceDate;
+                    itemInfo["serviceTime"] = cartItemDetails[item._id].serviceTime;
+                    itemInfo["deliveryTime"] = cartItemDetails[item._id].deliveryTime || cartItemDetails[item._id].serviceTime;
                     itemInfo["specialRequests"] = cartItemDetails[item._id].specialRequests;
+                    itemInfo["address"] = cartItemDetails[item._id].address;
                 }
                 
                 orderItems.push(itemInfo)
             }
+            return null; // Added return for map function
         }))
         
         let orderData = {
@@ -58,32 +96,37 @@ const PlaceOrder = () => {
             // Add overall customer details from first item's form data if available
             ...(orderItems.length > 0 && orderItems[0].customerName ? {
                 customerName: orderItems[0].customerName,
-                deliveryDate: orderItems[0].deliveryDate,
-                deliveryTime: orderItems[0].deliveryTime,
+                deliveryDate: orderItems[0].deliveryDate || orderItems[0].serviceDate,
+                deliveryTime: orderItems[0].deliveryTime || orderItems[0].serviceTime,
                 specialRequests: orderItems[0].specialRequests
             } : {})
         }
         
-        if (payment === "stripe") {
-            let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
-            if (response.data.success) {
-                const { session_url } = response.data;
-                window.location.replace(session_url);
+        try {
+            if (payment === "stripe") {
+                let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
+                if (response.data.success) {
+                    const { session_url } = response.data;
+                    window.location.replace(session_url);
+                }
+                else {
+                    toast.error("Something Went Wrong")
+                }
             }
             else {
-                toast.error("Something Went Wrong")
+                let response = await axios.post(url + "/api/order/placecod", orderData, { headers: { token } });
+                if (response.data.success) {
+                    navigate("/myorders")
+                    toast.success(response.data.message)
+                    setCartItems({});
+                }
+                else {
+                    toast.error("Something Went Wrong")
+                }
             }
-        }
-        else{
-            let response = await axios.post(url + "/api/order/placecod", orderData, { headers: { token } });
-            if (response.data.success) {
-                navigate("/myorders")
-                toast.success(response.data.message)
-                setCartItems({});
-            }
-            else {
-                toast.error("Something Went Wrong")
-            }
+        } catch (error) {
+            console.error("Error placing order:", error);
+            toast.error("Failed to place order. Please try again.");
         }
     }
     
@@ -108,11 +151,11 @@ const PlaceOrder = () => {
                                 {cartItemDetails && cartItemDetails[item._id] && (
                                     <div className="order-item-form-data">
                                         <h4>Delivery Details:</h4>
-                                        <p><strong>For:</strong> {cartItemDetails[item._id].customerName}</p>
-                                        <p><strong>Date:</strong> {new Date(cartItemDetails[item._id].deliveryDate).toLocaleDateString()}</p>
-                                        <p><strong>Time:</strong> {cartItemDetails[item._id].deliveryTime}</p>
-                                        {cartItemDetails[item._id].specialRequests && (
-                                            <p><strong>Special Requests:</strong> {cartItemDetails[item._id].specialRequests}</p>
+                                        <p><strong>For:</strong> {getServiceDetail(item, 'name')}</p>
+                                        <p><strong>Date:</strong> {getServiceDetail(item, 'date')}</p>
+                                        <p><strong>Time:</strong> {getServiceDetail(item, 'time')}</p>
+                                        {getServiceDetail(item, 'requests') !== 'None' && (
+                                            <p><strong>Special Requests:</strong> {getServiceDetail(item, 'requests')}</p>
                                         )}
                                     </div>
                                 )}
@@ -133,7 +176,7 @@ const PlaceOrder = () => {
         else if (getTotalCartAmount() === 0) {
             navigate('/cart')
         }
-    }, [token])
+    }, [token, getTotalCartAmount, navigate])
 
     return (
         <form onSubmit={placeOrder} className='place-order'>
