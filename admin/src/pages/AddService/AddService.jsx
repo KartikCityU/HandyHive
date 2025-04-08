@@ -26,7 +26,7 @@ const AddService = () => {
         "Driver",
         "Home Repair",
         "Appliance Repair",
-        "Gardening",
+        "Landscaping",
         "HVAC",
         "Moving"
     ];

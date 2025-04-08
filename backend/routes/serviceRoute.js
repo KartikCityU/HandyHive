@@ -1,5 +1,5 @@
 import express from 'express';
-import { addService, listServices, removeService } from '../controllers/serviceController.js';
+import { addService, listServices, removeService, getServiceById, updateService } from '../controllers/serviceController.js';
 import multer from 'multer';
 const serviceRouter = express.Router();
 
@@ -13,8 +13,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
+// Note: Fix the path structure - you're already in the /api/services/ route
 serviceRouter.get("/list", listServices);
 serviceRouter.post("/add", upload.single('image'), addService);
 serviceRouter.post("/remove", removeService);
+// GET a single service - fix path
+serviceRouter.get('/:id', getServiceById);
+// POST update a service - fix path
+serviceRouter.post("/update", upload.single('image'), updateService);
 
 export default serviceRouter;

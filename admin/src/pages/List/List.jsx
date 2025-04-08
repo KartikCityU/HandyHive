@@ -3,10 +3,12 @@ import './List.css'
 import { url, currency } from '../../assets/assets'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const List = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchServices = async () => {
     try {
@@ -89,7 +91,7 @@ const List = () => {
               <div className="action-buttons">
                 <button 
                   className="edit-button" 
-                  onClick={() => toast.info("Edit functionality coming soon")}
+                  onClick={() => navigate(`/edit-service/${service._id}`)}
                 >
                   Edit
                 </button>

@@ -1,0 +1,188 @@
+/* EditService.css */
+.add {
+    width: 80%;
+    margin-left: max(5vw, 25px);
+    margin-top: 30px;
+    color: #4A4A4A;
+    font-size: 16px;
+}
+
+.add h2 {
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #333;
+    font-weight: 600;
+    border-left: 4px solid #FF4C24;
+    padding-left: 12px;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.add-image {
+    margin-bottom: 10px;
+}
+
+.add-image p {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.image-input {
+    display: block;
+    cursor: pointer;
+}
+
+.selected-image {
+    width: 150px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.selected-image:hover {
+    border-color: #FF4C24;
+}
+
+.upload-placeholder {
+    width: 150px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-placeholder:hover {
+    border-color: #FF4C24;
+}
+
+.upload-icon {
+    font-size: 24px;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.upload-placeholder p {
+    margin: 0;
+    color: #888;
+    font-size: 14px;
+}
+
+.add-name, 
+.add-description {
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-name input, 
+.add-description textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    width: 100%;
+}
+
+.add-name input:focus, 
+.add-description textarea:focus {
+    outline: none;
+    border-color: #FF4C24;
+    box-shadow: 0 0 0 2px rgba(255, 76, 36, 0.1);
+}
+
+.add-category, 
+.add-price {
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-category select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: white;
+}
+
+.price-container {
+    display: flex;
+    gap: 10px;
+}
+
+.price-container input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.price-container select {
+    width: 140px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: white;
+}
+
+.add p {
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.add-btn {
+    background-color: #FF4C24;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 15px;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.add-btn:hover {
+    background-color: #e43e1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 18px;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .add {
+        width: 90%;
+    }
+    
+    .price-container {
+        flex-direction: column;
+    }
+    
+    .price-container select {
+        width: 100%;
+    }
+}

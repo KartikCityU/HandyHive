@@ -40,3 +40,35 @@
         width: 40px;
     }
 }
+
+/* Add these styles to your Orders.css file */
+
+.order-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .delete-btn {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff1f1f;
+  }
+  
+  /* Adjust existing styles for better layout with the new button */
+  .order-item {
+    align-items: center;
+  }
+  
+  .order-item select {
+    margin-bottom: 8px;
+  }

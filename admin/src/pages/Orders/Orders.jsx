@@ -29,6 +29,26 @@ const Order = () => {
     }
   }
 
+  const deleteOrderHandler = async (orderId) => {
+    // Display confirmation dialog
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      try {
+        const response = await axios.post(`${url}/api/order/delete`, {
+          orderId
+        });
+        
+        if (response.data.success) {
+          toast.success("Order deleted successfully");
+          await fetchAllOrders(); // Refresh the orders list
+        } else {
+          toast.error(response.data.message || "Failed to delete order");
+        }
+      } catch (error) {
+        console.error("Error deleting order:", error);
+        toast.error("An error occurred while deleting the order");
+      }
+    }
+  }
 
   useEffect(() => {
     fetchAllOrders();
@@ -61,11 +81,19 @@ const Order = () => {
             </div>
             <p>Items : {order.items.length}</p>
             <p>{currency}{order.amount}</p>
-            <select onChange={(e) => statusHandler(e, order._id)} value={order.status} name="" id="">
-              <option value="Food Processing">Food Processing</option>
-              <option value="Out for delivery">Out for delivery</option>
-              <option value="Delivered">Delivered</option>
-            </select>
+            <div className="order-actions">
+              <select onChange={(e) => statusHandler(e, order._id)} value={order.status} name="" id="">
+                <option value="Food Processing">Food Processing</option>
+                <option value="Out for delivery">Out for delivery</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+              <button 
+                className="delete-btn" 
+                onClick={() => deleteOrderHandler(order._id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

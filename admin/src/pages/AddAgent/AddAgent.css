@@ -207,3 +207,115 @@
     font-size: 30px;
     margin-bottom: 5px;
   }
+
+  /* Add these styles to your AddAgent.css file */
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  color: #e0e0e0;
+  transition: color 0.2s ease;
+}
+
+.star:hover {
+  color: #ffb400;
+}
+
+.star.filled {
+  color: #ffb400;
+}
+
+.rating-value {
+  margin-left: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* You might also want to adjust the existing form styles */
+.add-field {
+  margin-bottom: 15px;
+}
+
+* Star Rating Component for forms and displays */
+.star-rating {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  font-size: 18px;
+  color: #ddd; /* Empty star color */
+  margin-right: 2px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.star.filled {
+  color: #FFBF00; /* Full star color - golden yellow */
+}
+
+.star.half-filled {
+  position: relative;
+  color: #ddd; /* Base color */
+}
+
+.star.half-filled .half-star-overlay {
+  position: absolute;
+  width: 50%;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+  color: #FFBF00; /* Half star color - golden yellow */
+}
+
+.rating-value {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Star display in tables/lists */
+.rating-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-star {
+  color: #FFBF00;
+  margin-left: 2px;
+  font-size: 18px;
+}
+
+/* Stars container in agent cards */
+.stars-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Agent rating in cards */
+.agent-rating {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}

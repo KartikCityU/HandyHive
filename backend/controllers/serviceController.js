@@ -59,4 +59,75 @@ const removeService = async (req, res) => {
     }
 }
 
-export { listServices, addService, removeService };
+// Get a single service by ID
+const getServiceById = async (req, res) => {
+    try {
+        const serviceId = req.params.id;
+        const service = await serviceModel.findById(serviceId);
+        
+        if (!service) {
+            return res.json({ success: false, message: "Service not found" });
+        }
+        
+        res.json({ success: true, data: service });
+    } catch (error) {
+        console.error("Error fetching service:", error);
+        res.json({ success: false, message: "Error fetching service details" });
+    }
+};
+  
+// Update a service
+const updateService = async (req, res) => {
+    try {
+        const { id, name, category, price, priceType, description } = req.body;
+        
+        // Check if service exists
+        const service = await serviceModel.findById(id);
+        if (!service) {
+            return res.json({ success: false, message: "Service not found" });
+        }
+        
+        // Create update object
+        const updateData = {
+            name,
+            category,
+            price,
+            priceType,
+            description
+        };
+        
+        // If a new image was uploaded
+        if (req.file) {
+            // Delete old image if not default
+            if (service.image) {
+                const imagePath = `uploads/${service.image}`;
+                if (fs.existsSync(imagePath)) {
+                    fs.unlink(imagePath, (err) => {
+                        if (err) console.log("Error deleting old image:", err);
+                    });
+                }
+            }
+            
+            // Set new image
+            updateData.image = req.file.filename;
+        }
+        
+        // Update the service
+        const updatedService = await serviceModel.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true } // Return the updated document
+        );
+        
+        res.json({ 
+            success: true, 
+            message: "Service updated successfully",
+            data: updatedService
+        });
+    } catch (error) {
+        console.error("Error updating service:", error);
+        res.json({ success: false, message: "Error updating service" });
+    }
+};
+
+export { listServices, addService, removeService, getServiceById, updateService };

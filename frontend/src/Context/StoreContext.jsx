@@ -11,6 +11,7 @@ import driver from "../assets/images/driver.png";
 import repair from "../assets/images/homedecor.png";
 import appliance from "../assets/images/appliance.png";
 import hvac from "../assets/images/hvac.png";
+import all from "../assets/images/all.jpg";
 
 const StoreContextProvider = (props) => {
     const url = "http://localhost:4000";
@@ -23,6 +24,7 @@ const StoreContextProvider = (props) => {
 
     // Define service categories with imported images
     const service_categories = [
+        { category_name: "All", category_image: all },
         { category_name: "Plumbing", category_image: plumbing },
         { category_name: "Electrical", category_image: electrical },
         { category_name: "Cleaning", category_image: cleaning },

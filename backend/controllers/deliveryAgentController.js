@@ -1,4 +1,5 @@
 import DeliveryAgent from "../models/deliveryAgentModel.js";
+import fs from 'fs';
 
 // Get all delivery agents
 export const getAllAgents = async (req, res) => {
@@ -36,8 +37,29 @@ export const addAgent = async (req, res) => {
     let profileImage = req.file ? req.file.filename : 'default-agent.png';
     console.log("Profile image name:", profileImage); // Debug log
     
-    // Extract data from request body
-    const { name, email, phone, address, city, bio, serviceType } = req.body;
+    // Extract ALL data from request body
+    const { 
+      name, 
+      email, 
+      phone, 
+      address, 
+      city, 
+      bio, 
+      serviceType,
+      activeStatus,
+      completedServices,
+      rating
+    } = req.body;
+    
+    // Parse numeric fields
+    const parsedCompletedServices = parseInt(completedServices) || 0;
+    const parsedRating = parseFloat(rating) || 0;
+    
+    // Debug
+    console.log("Completed Services (raw):", completedServices);
+    console.log("Rating (raw):", rating);
+    console.log("Completed Services (parsed):", parsedCompletedServices);
+    console.log("Rating (parsed):", parsedRating);
     
     const newAgent = new DeliveryAgent({
       name,
@@ -48,10 +70,14 @@ export const addAgent = async (req, res) => {
       bio: bio || "",
       serviceType: serviceType || "Plumber",
       profileImage: profileImage,
+      // Add the missing fields with proper conversion
+      activeStatus: activeStatus === 'true' || activeStatus === true,
+      completedServices: parsedCompletedServices,
+      rating: parsedRating
     });
     
     const savedAgent = await newAgent.save();
-    console.log("Agent saved with image:", savedAgent.profileImage); // Debug log
+    console.log("Agent saved:", savedAgent); // Debug log
     
     res.json({ success: true, message: "Agent added successfully", data: savedAgent });
   } catch (error) {
@@ -65,6 +91,20 @@ export const updateAgent = async (req, res) => {
   try {
     const agentId = req.params.id;
     const updateData = {...req.body};
+    
+    // Handle numeric fields
+    if (updateData.completedServices !== undefined) {
+      updateData.completedServices = parseInt(updateData.completedServices) || 0;
+    }
+    
+    if (updateData.rating !== undefined) {
+      updateData.rating = parseFloat(updateData.rating) || 0;
+    }
+    
+    // Handle boolean fields
+    if (updateData.activeStatus !== undefined) {
+      updateData.activeStatus = updateData.activeStatus === 'true' || updateData.activeStatus === true;
+    }
     
     // Add profile image if a new one was uploaded
     if (req.file) {

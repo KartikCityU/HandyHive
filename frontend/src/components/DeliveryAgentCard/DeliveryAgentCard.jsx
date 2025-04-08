@@ -12,19 +12,44 @@ const DeliveryAgentCard = ({ agent }) => {
         name, 
         profileImage, 
         bio, 
-        averageRating, 
+        rating, // Changed from averageRating to rating
         completedServices, 
         activeStatus, 
         serviceType 
     } = agent;
     
-    // Format the average rating to display with one decimal place
-    const formattedRating = parseFloat(averageRating || 0).toFixed(1);
+    // Format the rating to display with one decimal place
+    const formattedRating = parseFloat(rating || 0).toFixed(1);
     
     // Format bio text to show only first 60 characters with ellipsis
     const formatBio = (text) => {
         if (!text) return '';
         return text.length > 60 ? `${text.substring(0, 60)}...` : text;
+    };
+
+    // Render stars with proper half-star support
+    const renderStars = () => {
+        const stars = [];
+        const ratingValue = parseFloat(formattedRating);
+        
+        for (let i = 1; i <= 5; i++) {
+            if (ratingValue >= i) {
+                // Full star
+                stars.push(<span key={i} className="star filled">★</span>);
+            } else if (ratingValue >= i - 0.5) {
+                // Half star
+                stars.push(
+                    <span key={i} className="star half-filled">
+                        <span className="half-star-overlay">★</span>
+                    </span>
+                );
+            } else {
+                // Empty star
+                stars.push(<span key={i} className="star">★</span>);
+            }
+        }
+        
+        return stars;
     };
 
     return (
@@ -60,14 +85,7 @@ const DeliveryAgentCard = ({ agent }) => {
                     
                     <div className="agent-rating">
                         <div className="stars-container">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <span 
-                                    key={star} 
-                                    className={`star ${formattedRating >= star ? 'filled' : formattedRating >= star - 0.5 ? 'half-filled' : ''}`}
-                                >
-                                    ★
-                                </span>
-                            ))}
+                            {renderStars()}
                         </div>
                         <span className="rating-value">{formattedRating}</span>
                     </div>

@@ -1,54 +1,55 @@
 .delivery-agent-card {
     position: relative;
     display: flex;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     background-color: #ffffff;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     transition: all 0.3s ease;
     cursor: pointer;
-    max-width: 600px;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    padding: 30px;
-    gap: 24px;
+    padding: 20px;
     align-items: center;
 }
 
 .delivery-agent-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .delivery-agent-card.inactive {
-    opacity: 0.9;
+    opacity: 0.85;
     background-color: #f9f9f9;
 }
 
 .agent-status-badge {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    padding: 8px 16px;
+    top: 12px;
+    right: 12px;
+    padding: 6px 14px;
     border-radius: 50px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.5px;
     background-color: #4CAF50;
     color: white;
-    box-shadow: 0 3px 6px rgba(76, 175, 80, 0.2);
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+    z-index: 1;
 }
 
 .delivery-agent-card.inactive .agent-status-badge {
     background-color: #F44336;
-    box-shadow: 0 3px 6px rgba(244, 67, 54, 0.2);
+    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
 }
 
 .agent-image-container {
-    width: 140px;
-    height: 140px;
-    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+    position: relative;
 }
 
 .agent-image {
@@ -56,7 +57,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .agent-info {
@@ -64,27 +65,26 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 12px;
 }
 
 .agent-name {
-    margin: 0;
-    font-size: 24px;
+    margin: 0 0 8px 0;
+    font-size: 20px;
     color: #333;
-    font-weight: 700;
-    line-height: 1.3;
+    font-weight: 600;
+    padding-right: 100px; /* Added to prevent overlap with status badge */
 }
 
 .agent-vehicle {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .vehicle-badge {
     background-color: #F0F4F8;
     color: #2C3E50;
-    padding: 6px 14px;
+    padding: 4px 12px;
     border-radius: 50px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     display: inline-block;
 }
@@ -92,18 +92,18 @@
 .agent-rating {
     display: flex;
     align-items: center;
-    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .stars-container {
     display: flex;
-    align-items: center;
+    margin-right: 8px;
 }
 
 .star {
     color: #E0E0E0;
-    font-size: 22px;
-    margin-right: 3px;
+    font-size: 18px;
+    margin-right: 2px;
 }
 
 .star.filled {
@@ -128,51 +128,63 @@
 .rating-value {
     font-weight: 600;
     color: #555;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .agent-deliveries {
-    margin: 0;
-    font-size: 15px;
+    margin: 4px 0;
+    font-size: 14px;
     color: #666;
-    line-height: 1.5;
+    line-height: 1.4;
+    max-width: 240px;
 }
 
 .delivery-count {
-    font-weight: 700;
+    font-weight: 600;
     color: #FF4C24;
-    font-size: 16px;
 }
 
 .agent-bio {
     color: #666;
-    font-size: 15px;
-    margin: 0;
-    line-height: 1.6;
+    font-size: 14px;
+    margin-top: 6px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.4;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .delivery-agent-card {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 30px 20px;
-        gap: 20px;
+        padding: 20px 15px;
+        position: relative;
+    }
+    
+    .agent-status-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
     }
     
     .agent-image-container {
-        width: 120px;
-        height: 120px;
+        width: 90px;
+        height: 90px;
+        margin-right: 0;
+        margin-bottom: 15px;
     }
     
     .agent-info {
         align-items: center;
-        gap: 15px;
+        padding: 0;
+    }
+    
+    .agent-name {
+        padding-right: 0;
     }
     
     .agent-rating {
@@ -181,5 +193,79 @@
     
     .agent-deliveries {
         text-align: center;
+        max-width: 100%;
     }
+}
+
+* Star Rating Component for forms and displays */
+.star-rating {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  font-size: 18px;
+  color: #ddd; /* Empty star color */
+  margin-right: 2px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.star.filled {
+  color: #FFBF00; /* Full star color - golden yellow */
+}
+
+.star.half-filled {
+  position: relative;
+  color: #ddd; /* Base color */
+}
+
+.star.half-filled .half-star-overlay {
+  position: absolute;
+  width: 50%;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+  color: #FFBF00; /* Half star color - golden yellow */
+}
+
+.rating-value {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Star display in tables/lists */
+.rating-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-star {
+  color: #FFBF00;
+  margin-left: 2px;
+  font-size: 18px;
+}
+
+/* Stars container in agent cards */
+.stars-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Agent rating in cards */
+.agent-rating {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
 }

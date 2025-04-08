@@ -115,7 +115,7 @@ const DeliveryAgents = () => {
                   <td>{agent.city}</td>
                   <td className="rating-cell">
                     <div className="rating-display">
-                      <span className="rating-value">{agent.averageRating || 0}</span>
+                      <span className="rating-value">{parseFloat(agent.rating || 0).toFixed(1)}</span>
                       <span className="rating-star">★</span>
                     </div>
                   </td>
