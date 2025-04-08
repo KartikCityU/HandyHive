@@ -176,22 +176,6 @@ const MyOrders = () => {
                         <h3>Assigned Service Partner</h3>
                         {order.hasAgentDetails && order.agentDetails ? (
                           <div className="agent-details">
-                            <div className="agent-image">
-                              {order.agentProfileImage || (order.agentDetails && order.agentDetails.profileImage) ? (
-                                <img 
-                                  src={`${url}/images/agents/${order.agentProfileImage || order.agentDetails.profileImage}`} 
-                                  alt={order.agentName || order.agentDetails.name}
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.parentNode.innerHTML = `<div class="agent-placeholder">${(order.agentName || order.agentDetails.name)?.charAt(0) || 'A'}</div>`;
-                                  }}
-                                />
-                              ) : (
-                                <div className="agent-placeholder">
-                                  {(order.agentName || order.agentDetails.name)?.charAt(0) || 'A'}
-                                </div>
-                              )}
-                            </div>
                             <div className="agent-info">
                               <h4>{order.agentName || order.agentDetails.name}</h4>
                               {order.agentDetails.serviceType && (
@@ -210,7 +194,7 @@ const MyOrders = () => {
                             <p><strong>Name:</strong> {order.agentName || 'Assigned'}</p>
                             {order.agentPhone && <p><strong>Phone:</strong> {order.agentPhone}</p>}
                             {order.agentEmail && <p><strong>Email:</strong> {order.agentEmail}</p>}
-                            <button 
+                            {/* <button 
                               className="load-agent-details"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -218,7 +202,7 @@ const MyOrders = () => {
                               }}
                             >
                               Load Full Partner Details
-                            </button>
+                            </button> */}
                           </div>
                         )}
                       </div>
